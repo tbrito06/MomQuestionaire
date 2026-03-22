@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Rosemary's Birthday Questionnaire</title>
+
+<style>
+body{
+    background-image:url("background.png");
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position:center;
+    font-family:Comic Sans MS, Arial, sans-serif;
+    margin:40px;
+    color:white;}
+
+h1{
+    text-align:center;
+    color:#0e1cd8;}
+
+p{
+    text-align:center;
+    font-size:18px;}
+
+label{
+    font-size:18px;
+    color:white;}
+
+input, textarea{
+    width:60%;
+    padding:8px;
+    border-radius:10px;
+    border:2px solid #0e1cd8;
+    font-size:16px;
+    resize:none;}
+
+button{
+    padding:12px 25px;
+    font-size:16px;
+    background-color:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;}
+
+button:hover{
+    background-color:#45a049;}
+
+#drawingCanvas{
+    width:60%;
+    height:250px;
+    border:3px solid #0e1cd8;
+    border-radius:15px;
+    background:white;
+    touch-action:none;
+}
+</style>
+
+<style>
+@media print {
+
+h1{
+    display:none;}
+#instructions{
+    display:none;}
+
+button{
+    display:none;}
+
+input{
+    border:1px solid black;
+    width:80%;}
+
+label{
+    font-weight:bold;}
+
+    label:first-of-type{
+    display:none;}
+
+    #printName{
+    font-size:20px;
+    text-align:center;
+    margin-bottom:20px;}
+
+#kidname{
+    display:none;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- Header -->
+<h1>Aunty Rosemary Extraordinaire - Happy Birthday Questionnaire</h1>
+
+<p id="printName"></p>
+
+<p id="instructions">Answer the questions below about Aunty Rosemary!</p>
+
+<!-- Questions -->
+<label>What is your name?</label><br>
+<input type="text" id="kidname"><br><br>
+
+<label>1. How old do you think she is?</label><br>
+<textarea id="age" rows="1"></textarea><br><br>
+
+<label>2. What is her favorite food?</label><br>
+<textarea id="food" rows="1"></textarea><br><br>
+
+<label>3. What is her favorite thing to do?</label><br>
+<textarea id="todo" rows="1"></textarea><br><br>
+
+<label>4. What makes her laugh?</label><br>
+<textarea id="laugh" rows="1"></textarea><br><br>
+
+<label>5. What does she always say?</label><br>
+<textarea id="says" rows="1"></textarea><br><br>
+
+<label>6. What is she really good at?</label><br>
+<textarea id="talent" rows="1"></textarea><br><br>
+
+<label>7. What is she not very good at?</label><br>
+<textarea id="nogood" rows="1"></textarea><br><br>
+
+<label>8. If she were an animal, what would she be?</label><br>
+<textarea id="animal" rows="1"></textarea><br><br>
+
+<label>9. What superpower should she have?</label><br>
+<textarea id="superpower" rows="1"></textarea><br><br>
+
+<label>10. What do you love most about her?</label><br>
+<textarea id="whylove" rows="1"></textarea><br><br>
+
+<label>11. What is your favorite thing to do together?</label><br>
+<textarea id="together" rows="1"></textarea><br><br>
+
+<label>12. What is your favorite memory with her?</label><br>
+<textarea id="memory" rows="1"></textarea><br><br>
+
+<label>13. What is something special she does for you?</label><br>
+<textarea id="special" rows="1"></textarea><br><br>
+
+<label>14. How do you know she loves you?</label><br>
+<textarea id="loveyou" rows="1"></textarea><br><br>
+
+<label>15. If she had a theme song, what would it be?</label><br>
+<textarea id="song" rows="1"></textarea><br><br>
+
+<label>16. If she were famous, what would she be famous for?</label><br>
+<textarea id="famous" rows="1"></textarea><br><br>
+
+<label>Bonus: Draw a picture of her.</label><br>
+
+<canvas id="drawingCanvas"></canvas><br>
+<button type="button" onclick="clearDrawing()">Clear Drawing</button>
+
+<br><br>
+
+
+<!-- Print Answers -->
+<br><br>
+<button onclick="window.print()">Print My Answers</button>
+
+
+<script>
+window.onbeforeprint = function() {
+    var name = document.getElementById("kidname").value;
+
+    if(name.trim() !== ""){
+        document.getElementById("printName").innerText = "Answers from " + name;    }
+}
+
+/* Auto-expand all answer boxes */
+document.querySelectorAll("textarea").forEach(function(box){
+    box.addEventListener("input", function(){
+        this.style.height = "";
+        this.style.height = this.scrollHeight + "px";
+    });
+});
+</script>
+
+<!-- Drawing Box -->
+<script>
+
+const canvas = document.getElementById("drawingCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
+
+let drawing = false;
+
+function startDraw(e){
+    drawing = true;
+    draw(e);}
+
+function endDraw(){
+    drawing = false;
+    ctx.beginPath();}
+
+function draw(e){
+    if(!drawing) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#000";
+
+    ctx.lineTo(x,y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x,y);}
+
+canvas.addEventListener("mousedown", startDraw);
+canvas.addEventListener("mouseup", endDraw);
+canvas.addEventListener("mousemove", draw);
+
+canvas.addEventListener("touchstart", startDraw);
+canvas.addEventListener("touchend", endDraw);
+canvas.addEventListener("touchmove", draw);
+
+function clearDrawing(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);}
+</script>
+
+</body>
+</html>
